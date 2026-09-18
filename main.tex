@@ -1,0 +1,1827 @@
+\documentclass[a4paper,14pt]{article}
+\input{preamble.tex}
+
+\title{Вопросы по курсу "Java".}
+\date{}
+
+\begin{document}
+    \maketitle
+    \section{Java core.}
+
+    \subsection{Что такое примитивные типы данных в Java?}
+    
+    \begin{itemize}
+        \item Перечислите все примитивные типы данных в Java, сколько байт они занимают?\\\\
+        \item Чем примитивные типы отличаются от объектов? \\
+        Примитивы хранят значение, объекты — ссылку на данные в heap.
+        \item В каких случаях лучше использовать примитив, а не обертку? \\
+        Частое создание оберток может вызывать лишние объекты и тормоза (особенно в циклах).
+    \end{itemize}
+    
+    \subsection{Что такое классы-обертки (Wrapper Classes)?}
+
+    \begin{itemize}
+        \item Для чего нужны классы-обертки? \\
+        Позволяют использовать примитивы как объекты (например, в коллекциях: \texttt{List<Integer>}).
+        \item Что такое autoboxing и unboxing?
+        \begin{lstlisting}[style=javastyle]
+Integer x = 5; // autoboxing  
+int y = x;     // unboxing
+        \end{lstlisting}
+        \item В каких случаях использование классов-оберток может быть неэффективным? \\
+        Частое создание оберток может вызывать лишние объекты и тормоза (особенно в циклах).
+    \end{itemize}
+
+    \subsection{Принципы ООП в Java.}
+    
+    \subsubsection*{4 основных принципа ООП.}
+    \begin{itemize}
+        \item Инкапсуляция - это сокрытие внутренней реализации класса и предоставление доступа к данным через методы.
+        \item Наследование - это возможность создавать новые классы на основе существующих, наследуя их свойства и методы.
+        \item Полиморфизм - это возможность использовать объекты разных классов через единый интерфейс (например, переопределение методов).
+        \item Абстракция - это процесс выделения общих характеристик объектов и скрытие деталей реализации.
+    \end{itemize}
+    \subsubsection*{Подвовросы.}
+    \begin{itemize}
+        \item Как инкапсуляция достигается через модификаторы доступа (`private`, `protected`)? \\
+        Сокрывают достуа к методу.
+        \item Приведите пример полиморфизма с интерфейсами или абстрактными классами.
+        \begin{lstlisting}[style=javastyle]
+interface Animal {
+    void sound(); 
+}
+class Dog implements Animal {
+    public void sound() { System.out.println("Woof"); }
+}
+Animal a = new Dog();
+a.sound(); // "Woof"
+        \end{lstlisting}
+        \item Что такое наследование и как оно реализовано в Java? \\
+        Ключевое слово extends — подкласс наследует поля и методы суперкласса.
+    \end{itemize}
+    \subsection{Интерфейсы vs. Абстрактные классы}
+
+\begin{itemize}
+    \item Какие возможности появились у интерфейсов в Java 8+ (\texttt{default}-методы, \texttt{static}-методы)? \\
+    Интерфейсы могут содержать реализацию методов с модификаторами \texttt{default} и \texttt{static}.
+    \begin{lstlisting}[style=javastyle]
+interface A {
+    default void show() { System.out.println("Default"); }
+    static void util() { System.out.println("Static"); }
+}
+    \end{lstlisting}
+    \item Когда следует использовать интерфейс, а когда абстрактный класс? \\
+    Интерфейс — для описания поведения; абстрактный класс — если нужен базовый функционал и состояние (поля).
+\end{itemize}
+
+\subsection{String vs StringBuilder vs StringBuffer}
+
+\begin{itemize}
+    \item Почему строки в Java являются неизменяемыми (immutable)? \\
+    Безопасность, потокобезопасность, возможность кеширования в пуле строк.
+    \item Как работает пул строк (String Pool)? \\
+    Повторяющиеся строковые литералы хранятся один раз в специальной области памяти (heap, interned).
+\end{itemize}
+
+\subsection{Устройство класса: конструктор, getter, setter, equals \& hashCode, toString}
+
+\begin{itemize}
+    \item Почему нужно переопределять основные методы класса \texttt{Object}? \\
+    Для корректного сравнения объектов (\texttt{equals}), работы с коллекциями (\texttt{hashCode}), читаемого вывода (\texttt{toString}).
+\end{itemize}
+
+\subsection{JVM vs JDK vs JRE}
+\begin{itemize}
+    \item JVM — исполняет Java-код.
+    \item JRE — нужен, чтобы запускать программы.
+    \item JDK — нужен, чтобы разрабатывать программы.
+\end{itemize}
+\subsubsection*{Подвовросы}
+\begin{itemize}
+    \item Какая из этих сред необходима для поставки на прод и почему? \\
+    Достаточно \texttt{JRE} или \texttt{runtime image}, так как она содержит только исполнение (JVM + библиотеки).
+    \item Какие дополнительные инструменты Java есть в \texttt{JDK}? \\
+    Компилятор \texttt{javac}, отладчик \texttt{jdb}, документация \texttt{javadoc}, упаковщик \texttt{jar} и др.
+\end{itemize}
+\subsection{Ключевое слово \texttt{static}}
+
+\begin{itemize}
+    \item Какие элементы в Java могут быть объявлены как \texttt{static}? \\
+    Поля, методы, блоки и вложенные классы.
+    \item В чем разница между статическими и нестатическими методами? \\
+    \texttt{static} метод не требует создания объекта и не имеет доступа к нестатическим членам.
+    \item Можно ли обращаться к нестатическим полям из статического метода? \\
+    Нет, требуется объект для доступа к нестатическим полям.
+\end{itemize}
+
+\subsection{Ключевое слово \texttt{final}}
+
+\begin{itemize}
+    \item Какие элементы класса можно пометить как \texttt{final}? \\
+    Классы, методы и переменные.
+    \item В чем разница между \texttt{final}, \texttt{finally} и \texttt{finalize}? \\
+    \texttt{final} — неизменяемость, \texttt{finally} — блок после \texttt{try-catch}, \texttt{finalize()} — устаревший метод очистки перед сборкой мусора.
+    \item Почему \texttt{final} используется для создания иммутабельных классов? \\
+    Запрещает изменение полей и наследование, обеспечивая неизменность состояния.
+\end{itemize}
+
+\subsection{Что такое перечисления (enum)}
+
+\begin{itemize}
+    \item Могут ли \texttt{enum} содержать поля и методы? \\
+    Да, можно добавлять поля, конструкторы и методы.
+    \begin{lstlisting}[style=javastyle]
+enum Color {
+    RED("FF0000");
+    private final String code;
+    Color(String code) { this.code = code; }
+    String getCode() { return code; }
+}
+    \end{lstlisting}
+    \item Почему для сравнения \texttt{enum} рекомендуется использовать \texttt{equals}, а не \texttt{==}? \\
+    Наоборот: \texttt{==} безопаснее, так как \texttt{enum} — синглтоны.
+\end{itemize}
+
+\subsection{Что такое исключения (exceptions)}
+
+\begin{itemize}
+    \item Какие типы исключений существуют? \\
+    Checked (например, \texttt{IOException}) и Unchecked (\texttt{NullPointerException}, наследники \texttt{RuntimeException}).
+    \item Как обрабатывать исключения с помощью \texttt{try-catch-finally}? \\
+    \begin{lstlisting}[style=javastyle]
+try {
+    int x = 1 / 0;
+} catch (ArithmeticException e) {
+    System.out.println("Error");
+} finally {
+    System.out.println("Done");
+}
+    \end{lstlisting}
+    \item Чем отличается \texttt{throw} от \texttt{throws}? \\
+    \texttt{throw} — выбрасывает исключение, \texttt{throws} — объявляет его в сигнатуре метода.
+\end{itemize}
+\subsection{Что такое класс \texttt{Object}}
+
+\begin{itemize}
+    \item Какие основные методы есть в классе \texttt{Object}? \\
+    \texttt{equals()}, \texttt{hashCode()}, \texttt{toString()}, \texttt{clone()}, \texttt{finalize()}, \texttt{wait()}, \texttt{notify()}.
+    \item Почему важно переопределять \texttt{equals} и \texttt{hashCode} вместе? \\
+    Чтобы объекты корректно работали в коллекциях с хэшированием (например, \texttt{HashMap}).
+    \item Как работает метод \texttt{toString} и зачем его переопределять? \\
+    Возвращает строковое представление объекта; переопределение улучшает читаемость вывода.
+\end{itemize}
+
+\subsection{Что такое Reflection API}
+\begin{Def}
+    Reflection API — это набор классов в пакете java.lang.reflect, который позволяет программе исследовать и изменять структуру классов, методов, полей и конструкторов во время выполнения (runtime).
+\end{Def}
+\begin{itemize}
+    \item Как можно получить информацию о классе во время выполнения? \\
+    Через объект \texttt{Class}, например, \texttt{MyClass.class} или \texttt{obj.getClass()}.
+    \item Какие есть ограничения у Reflection API? \\
+    Сниженная производительность, безопасность, отсутствие поддержки некоторых JVM оптимизаций.
+    \item В каких случаях Reflection API может быть полезен? \\
+    Фреймворки, тестирование, динамическая загрузка классов и вызов методов.
+\end{itemize}
+
+\subsection{Что такое Optional}
+
+\begin{itemize}
+    \item Как и зачем использовать \texttt{Optional} в Java? \\
+    Для явного указания отсутствия значения, избегая \texttt{null}.
+    \item Какие методы есть в \texttt{Optional} и как их использовать? \\
+    \texttt{of()}, \texttt{empty()}, \texttt{isPresent()}, \texttt{orElse()}, \texttt{ifPresent()}.
+    \item В каких случаях лучше возвращать \texttt{Optional}, а не \texttt{null}? \\
+    Когда результат может отсутствовать, и нужно избежать \texttt{NullPointerException}.
+\end{itemize}
+
+\subsection{Какие есть альтернативы возврату \texttt{null} из методов}
+
+\begin{itemize}
+    \item Что такое Null Object Pattern? \\
+    Объект-заглушка, который ведет себя как "пустой" вместо \texttt{null}.
+    \item Когда лучше кидать исключение, а не возвращать \texttt{Optional}? \\
+    При ошибках или некорректных ситуациях, когда отсутствует валидный результат.
+    \item Какие еще подходы существуют для избежания \texttt{null}? \\
+    Использование \texttt{Optional}, Null Object Pattern, валидация входных данных.
+\end{itemize}
+
+\subsection{Коллекции (Collections Framework) в Java}
+
+\begin{itemize}
+    \item Какие основные интерфейсы и классы есть в Collections Framework? \\
+    Интерфейсы: \texttt{Collection}, \texttt{List}, \texttt{Set}, \texttt{Queue}; классы: \texttt{ArrayList}, \texttt{LinkedList}, \texttt{HashSet}, \texttt{TreeSet}.
+    \item Чем \texttt{ArrayList} отличается от \texttt{LinkedList}? \\
+    \texttt{ArrayList} — массивный список с быстрым доступом по индексу; \texttt{LinkedList} — двусвязный список с быстрыми вставками/удалениями.
+    \item Чем \texttt{List} отличается от \texttt{Set}? \\
+    \texttt{List} допускает дубликаты и упорядочен, \texttt{Set} — уникальные элементы без порядка (или с сортировкой).
+\end{itemize}
+
+\subsection{ArrayList vs Обычный массив}
+
+\begin{itemize}
+    \item Как \texttt{ArrayList} увеличивает свой размер? \\
+    Создает новый массив с большим размером и копирует данные (обычно ~1.5-2 раза больше).
+    \item Почему \texttt{ArrayList} не потокобезопасен? \\
+    Нет внутренней синхронизации при изменении данных.
+    \item Какие преимущества у \texttt{ArrayList} перед обычным массивом? \\
+    Динамический размер, удобные методы добавления, удаления и поиска.
+\end{itemize}
+
+\subsection{Что такое Iterable и Iterator}
+
+\begin{itemize}
+    \item Как работает цикл \texttt{for-each} под капотом? \\
+    Использует \texttt{Iterator} для последовательного обхода коллекции.
+    \item Можно ли удалять элементы из коллекции во время итерации? \\
+    Да, через метод \texttt{Iterator.remove()}, иначе возникнет \texttt{ConcurrentModificationException}.
+    \item Чем \texttt{Iterable} отличается от \texttt{Iterator}? \\
+    \texttt{Iterable} предоставляет \texttt{Iterator}, а \texttt{Iterator} — сам объект для обхода.
+\end{itemize}
+
+\subsection{Что такое анонимные классы и лямбда-выражения}
+
+\begin{itemize}
+    \item В каких сценариях каждый из них применять? \\
+    Анонимные классы — для единичных реализаций; лямбды — для компактного функционального кода.
+    \item Как лямбда-выражения связаны с функциональными интерфейсами? \\
+    Лямбды реализуют функциональный интерфейс:
+\begin{lstlisting}[style=javastyle]
+@FunctionalInterface
+public interface Runnable {
+    public abstract void run();
+}
+\end{lstlisting}
+    \item Какие недостатки у анонимных классов? \\
+    Более громоздкий синтаксис, создание отдельного класса в байткоде.
+\end{itemize}
+
+\subsection{Лямбда-выражения и функциональные интерфейсы}
+
+\begin{itemize}
+    \item Как лямбда-выражения связаны с функциональными интерфейсами? \\
+    Лямбды реализуют функциональный интерфейс:
+\begin{lstlisting}[style=javastyle]
+@FunctionalInterface
+public interface Runnable {
+    public abstract void run();
+}
+\end{lstlisting}
+    \item Какие есть стандартные функциональные интерфейсы (\texttt{Predicate}, \texttt{Function}, \texttt{Consumer})? \\
+    \begin{itemize}
+    \item \texttt{Predicate<T>} \\
+    Принимает объект типа \texttt{T}, возвращает \texttt{boolean}. Часто используется для фильтрации.
+    \begin{lstlisting}[style=javastyle]
+Predicate<String> isEmpty = s -> s.isEmpty();
+System.out.println(isEmpty.test("")); // true
+    \end{lstlisting}
+    
+    \item \texttt{Function<T, R>} \\
+    Принимает \texttt{T}, возвращает \texttt{R}. Применяется для преобразования значений.
+    \begin{lstlisting}[style=javastyle]
+Function<String, Integer> toLength = s -> s.length();
+System.out.println(toLength.apply("abc")); // 3
+    \end{lstlisting}
+    
+    \item \texttt{Consumer<T>} \\
+    Принимает \texttt{T}, ничего не возвращает. Используется для выполнения действий с объектом.
+    \begin{lstlisting}[style=javastyle]
+Consumer<String> print = s -> System.out.println(s);
+print.accept("Hello"); // Hello
+    \end{lstlisting}
+    
+    \item \texttt{Supplier<T>} \\
+    Ничего не принимает, возвращает \texttt{T}. Удобен для ленивой инициализации.
+    \begin{lstlisting}[style=javastyle]
+Supplier<String> getName = () -> "Java";
+System.out.println(getName.get()); // Java
+    \end{lstlisting}
+    
+    \item \texttt{UnaryOperator<T>} \\
+    Специализация \texttt{Function<T, T>}, принимает и возвращает один тип.
+    \begin{lstlisting}[style=javastyle]
+UnaryOperator<Integer> square = x -> x * x;
+System.out.println(square.apply(5)); // 25
+    \end{lstlisting}
+    
+    \item \texttt{BinaryOperator<T>} \\
+    Специализация \texttt{BiFunction<T, T, T>}, принимает два аргумента одного типа, возвращает тот же тип.
+    \begin{lstlisting}[style=javastyle]
+BinaryOperator<Integer> add = (a, b) -> a + b;
+System.out.println(add.apply(2, 3)); // 5
+    \end{lstlisting}
+\end{itemize}
+    \item В чем преимущества лямбда-выражений? \\
+    Краткость, читаемость, поддержка функционального программирования.
+\end{itemize}
+
+\section{Java Advanced.}
+\subsection{Что такое generics (обобщения)}
+
+\begin{itemize}
+\item Для чего нужны generics? \\
+Позволяют создавать обобщённый код, безопасный по типам, без кастов: \texttt{List<String>}, \texttt{Map<K, V>}.
+
+
+\item В чем разница между \texttt{List<String>} и \texttt{List<Object>}? \\
+\texttt{List<String>} принимает только строки; \texttt{List<Object>} — объекты любых типов.
+
+\item Что такое wildcards (\texttt{?}, \texttt{? extends T}, \texttt{? super T})? \\
+\texttt{?} — неизвестный тип; \texttt{? extends T} — любой подтип T; \texttt{? super T} — любой супертит T.
+
+
+\end{itemize}
+
+\subsection{Почему нельзя создать массив дженериков (\texttt{new T[]})?}
+
+\begin{itemize}
+\item Какие есть обходные пути? \\
+Использовать \texttt{List<T>}, \texttt{Array.newInstance(Class<T>, size)} или приведение с подавлением предупреждения.
+
+
+\item Как связаны массивы и дженерики в Java? \\
+Массивы — ковариантны и проверяются во время выполнения, дженерики — инвариантны и проверяются на этапе компиляции.
+
+
+\end{itemize}
+
+\subsection{Как работает HashMap}
+
+\begin{itemize}
+\item Как разрешаются коллизии в \texttt{HashMap}? \\
+Через цепочки (связанный список или дерево с Java 8+).
+
+
+\item Почему важно правильно переопределять \texttt{equals()} и \texttt{hashCode()} для ключей? \\
+От \texttt{hashCode()} зависит индекс корзины, от \texttt{equals()} — корректность поиска.
+
+
+\end{itemize}
+
+\subsection{HashSet vs LinkedHashSet}
+
+\begin{itemize}
+\item Как \texttt{HashSet} проверяет уникальность элементов? \\
+Через \texttt{hashCode()} и \texttt{equals()}.
+
+
+\item Почему порядок элементов в \texttt{HashSet} не гарантируется? \\
+Порядок зависит от хеш-функции и внутренней структуры.
+
+\item Чем \texttt{LinkedHashSet} отличается от \texttt{HashSet}? \\
+\texttt{LinkedHashSet} сохраняет порядок добавления элементов.
+
+
+\end{itemize}
+
+\subsection{Как происходит работа с многопоточностью в Java}
+
+\begin{itemize}
+\item Как создать поток (\texttt{Thread}) в Java? \\
+Через наследование от \texttt{Thread} или реализацию интерфейса \texttt{Runnable}.
+\begin{lstlisting}[style=javastyle]
+new Thread(() -> System.out.println("Hi")).start();
+\end{lstlisting}
+
+
+\item Что такое \texttt{synchronized} и как он работает? \\
+Блокирует доступ к ресурсу — только один поток может войти в синхронизированный блок одновременно.
+
+\item Какие есть способы синхронизации потоков? \\
+Ключевое слово \texttt{synchronized}/\texttt{volatile}, классы из пакета \texttt{java.util.concurrent} (\texttt{Lock}, \texttt{Semaphore}, \texttt{CountDownLatch}).
+
+
+\end{itemize}
+
+\subsection{Что такое Stream API}
+
+\begin{itemize}
+\item Какие есть основные операции в Stream API (\texttt{map}, \texttt{filter}, \texttt{reduce})? \\
+\texttt{map()} — преобразование, \texttt{filter()} — отбор, \texttt{reduce()} — свертка к одному значению.
+
+
+\item В чем разница между промежуточными и терминальными операциями? \\
+Промежуточные возвращают Stream, терминальные завершают вычисление (например, \texttt{collect()}, \texttt{forEach()}).
+
+\item Как Stream API работает с параллельными потоками? \\
+\texttt{parallelStream()} делит данные на подзадачи, исполняет их параллельно с помощью ForkJoinPool.
+
+
+\end{itemize}
+
+\subsection{Что такое аннотации в Java, как создать собственную}
+\begin{lstlisting}[style=javastyle]
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MyAnnotation {
+    String value();
+    int count() default 1;
+}
+\end{lstlisting}    
+
+\begin{itemize}
+\item Какие есть стандартные аннотации (\texttt{@Override}, \texttt{@Deprecated})? \\
+\texttt{@Override} — проверка переопределения, \texttt{@Deprecated} — пометка устаревших методов.
+
+
+\item Как обрабатывать аннотации с помощью Reflection API? \\
+Через методы \texttt{Class.getAnnotations()}, \texttt{Method.getAnnotation(Class)} и др.
+
+
+\end{itemize}
+
+\subsection{Что такое Records}
+
+\begin{itemize}
+\item Чем Records отличаются от обычных классов? \\
+Автоматически генерируют поля, конструктор, \texttt{equals()}, \texttt{hashCode()}, \texttt{toString()}.
+
+
+\item Какие методы автоматически генерируются для Records? \\
+Все стандартные: \texttt{constructor}, \texttt{getters}, \texttt{equals()}, \texttt{hashCode()}, \texttt{toString()}.
+
+\item В каких случаях удобно использовать Records? \\
+Для DTO и неизменяемых структур данных.
+
+
+\end{itemize}
+\subsection{Устройство памяти в JVM: области и их ответственность}
+
+\begin{itemize}
+\item Как устроена память в JVM (Heap, Stack, Method Area)? \\
+\textbf{Heap} — область для хранения объектов. \\ \textbf{Stack} — для хранения вызовов методов и локальных переменных. \\ \textbf{Method Area} — для хранения информации о классах (структура, константы, статические поля).
+
+\item Чем отличается Heap от Stack? \\
+\textbf{Heap} управляется сборщиком мусора, общий для всех потоков. \\ \textbf{Stack} — индивидуален для каждого потока, быстрее по доступу, управляется вручную (при вызове/выходе из метода).
+
+\item Какие объекты хранятся в Heap, а какие в Stack? \\
+В \textbf{Heap} — все объекты и их поля. В \textbf{Stack} — ссылки на объекты, примитивные переменные, контекст выполнения методов.
+\end{itemize}
+
+\subsection{Устройство Garbage Collection в JVM: задачи, виды, как работает}
+
+\begin{itemize}
+\item Как работает Garbage Collection в Java? \\
+Автоматически освобождает память, удаляя объекты, на которые нет активных ссылок.
+
+\item Какие бывают этапы сборки мусора (Minor GC, Major GC, Full GC)? \\
+\textbf{Minor GC} — чистка молодого поколения (Young Gen), быстрая. \\ \textbf{Major GC} — чистка старого поколения (Old Gen), медленнее. \\ \textbf{Full GC} — сборка всего кучи, включая метаинформацию, самая дорогая по времени.
+
+\item Что такое Generational GC и как он работает? \\
+Модель поколений: объекты сначала попадают в \textbf{Young Gen}, затем — в \textbf{Old Gen}, если живут долго. Это повышает эффективность сборки мусора.
+\end{itemize}
+
+\subsection{Что такое JIT-компиляция}
+JIT-компиляция (Just-In-Time compilation) — это технология в JVM, при которой байт-код Java компилируется в машинный код не заранее, а прямо во время выполнения программы (в нужный момент).
+\begin{itemize}
+\item Как JIT-компилятор ускоряет выполнение Java-кода? \\
+JIT (Just-In-Time) компилирует байткод в машинный код во время выполнения, ускоряя повторяющиеся участки.
+
+\item Чем интерпретатор отличается от JIT-компилятора? \\
+Интерпретатор выполняет байткод построчно. JIT компилирует часто используемые методы в машинный код один раз и повторно использует его.
+
+\item Какова единица компиляции в Java? \\
+Обычно — \textbf{метод}. JIT компилирует метод целиком.
+\end{itemize}
+
+\subsection{Что такое Unit и интеграционные тесты}
+
+\begin{itemize}
+\item Какие задачи решают Unit-тесты? \\
+Проверяют корректность работы отдельных методов или классов в изоляции.
+
+\item Почему важно разделять Unit-тесты и интеграционные тесты? \\
+Unit-тесты быстрые и изолированные. Интеграционные проверяют взаимодействие компонентов и требуют окружения (БД, сеть и т.д.).
+
+\item Какой фреймворк используется для написания Unit-тестов в Java? \\
+\textbf{JUnit} — самый популярный. Также: TestNG, Mockito (для моков).
+\end{itemize}
+
+\subsection{Что такое E2E тестирование}
+
+\begin{itemize}
+\item Чем оно отличается от модульного и интеграционного? \\
+E2E (end-to-end) тестирует всю систему целиком — от пользовательского интерфейса до БД.
+
+\item Какие слои приложения охватывает E2E тестирование? \\
+UI, backend, база данных, внешние сервисы — вся цепочка обработки запроса.
+
+\item Почему E2E тесты считаются наиболее приближенными к реальным условиям? \\
+Они эмулируют поведение настоящего пользователя, тестируя всю систему в реальной среде.
+\end{itemize}
+
+\subsection{Что такое потокобезопасность и как ее достичь}
+
+\begin{itemize}
+\item Какие классы являются потокобезопасными по умолчанию? \\
+\texttt{Vector}, \texttt{Hashtable}, \texttt{ConcurrentHashMap}, \texttt{AtomicInteger} и другие из пакета \texttt{java.util.concurrent}.
+
+\item Почему классы без состояния (stateless) всегда потокобезопасны? \\
+Они не хранят данные между вызовами, не используют общую изменяемую память — значит, не возникает конфликтов между потоками.
+\end{itemize}
+
+\subsection{Проблема Race Condition}
+
+\begin{itemize}
+\item Как состояние гонки может привести к некорректной работе программы? \\
+Если два потока одновременно обращаются к общей переменной, результат зависит от порядка выполнения — это может вызвать ошибки, дубли, потерю данных.
+
+\item Приведите пример, где возникает race condition, и объясните, как его можно исправить. \
+\begin{lstlisting}[style=javastyle]
+int counter = 0;
+Runnable r = () -> {
+for (int i = 0; i < 1000; i++) {
+counter++; // race condition
+}
+};
+\end{lstlisting}
+Исправление — синхронизация:
+\begin{lstlisting}[style=javastyle]
+synchronized (lock) {
+counter++;
+}
+\end{lstlisting}
+Или использовать \texttt{AtomicInteger}.
+\end{itemize}
+\subsection{Ключевое слово \texttt{volatile}}
+
+\begin{itemize}
+\item Когда следует использовать \texttt{volatile} и какие проблемы он решает? \\
+\texttt{volatile} обеспечивает видимость изменений переменной между потоками. Используется, когда один поток записывает значение, а другие читают.
+
+\item Почему \texttt{volatile} не решает проблему атомарности? \\
+\texttt{volatile} не предотвращает гонки при чтении-модификации-записи (например, \texttt{x++}), т.к. такие операции не атомарны.
+
+\item В каких случаях использование \texttt{volatile} достаточно, а в каких — нет? \\
+Достаточно: флаг завершения потока (\texttt{volatile boolean running}). \
+Недостаточно: счётчики, инкременты, кэш с множественными полями — нужен \texttt{synchronized} или атомарные классы.
+\end{itemize}
+
+\subsection{Ключевое слово \texttt{synchronized}}
+
+\begin{itemize}
+\item Как работает ключевое слово \texttt{synchronized}? \\
+Оно устанавливает взаимное исключение (mutex), позволяя только одному потоку выполнять защищённый блок кода. Обеспечивает атомарность и видимость изменений.
+
+\item Какие объекты можно использовать в качестве монитора для \texttt{synchronized}? \\
+Любой объект: \texttt{this}, класс (\texttt{MyClass.class}), любой объект-синхронизатор.
+
+\item В чем разница между синхронизированным методом и синхронизированным блоком? \\
+Метод — синхронизация на \texttt{this} или \texttt{Class.class}. \
+Блок — можно явно указать объект-монитор и защитить только часть кода.
+\end{itemize}
+
+\subsection{Что такое атомарные классы}
+
+\begin{itemize}
+\item Как работают атомарные классы (например, \texttt{AtomicLong})? \\
+Используют неблокирующие операции на основе \texttt{CAS} (Compare-And-Swap), предоставляя атомарность без блокировок.
+
+\item В каких сценариях атомарные классы предпочтительнее \texttt{synchronized}? \\
+При частых коротких операциях (инкремент, счетчик), где накладные расходы на \texttt{synchronized} избыточны.
+\end{itemize}
+
+\subsection{Что такое Happens-before в Java Memory Model (JMM)}
+Happens-before — это ключевое понятие в Java Memory Model (JMM), которое описывает гарантии порядка видимости операций между потоками.
+Если операция A happens-before операция B, то B увидит результат A или состояние, которое A оставила.
+\begin{itemize}
+\item Как happens-before гарантирует видимость изменений между потоками? \\
+Если между двумя действиями есть отношение happens-before, все изменения, сделанные первым действием, будут видны второму.
+
+\item Примеры happens-before отношений: \
+\begin{itemize}
+\item Запись в \texttt{volatile} переменную → чтение из неё в другом потоке.
+\item Вход в \texttt{synchronized} блок → выход из блока.
+\item Запуск потока через \texttt{start()} → начало его \texttt{run()} метода.
+\item Завершение \texttt{Thread.join()} → завершение потока.
+\end{itemize}
+\end{itemize}
+
+\subsection{Как создавать потоки в Java}
+С помощью класса \texttt{Thread}.
+\begin{itemize}
+\item Что такое \texttt{synchronized} и как он работает? \\
+Ключевое слово для обеспечения взаимного исключения. Гарантирует, что только один поток выполнит блок кода одновременно.
+
+\item Какие есть способы синхронизации потоков? \\
+\begin{itemize}
+\item \texttt{synchronized} (блоки и методы)
+\item Классы из \texttt{java.util.concurrent}: \texttt{Lock}, \texttt{ReentrantLock}, \texttt{Semaphore}, \texttt{CountDownLatch}, \texttt{CyclicBarrier}
+\item Атомарные переменные: \texttt{AtomicInteger}, \texttt{AtomicReference}
+\item \texttt{volatile} — для простой видимости
+\end{itemize}
+\end{itemize}
+\subsection{Как Garbage Collector работает с Heap}
+
+\begin{itemize}
+\item Чем отличается Heap от Stack? \\
+Heap — это область памяти, где хранятся все объекты, созданные в процессе выполнения программы. Память в Heap общая для всех потоков и управляется сборщиком мусора. \\
+Stack — память, выделенная для каждого потока отдельно, где хранятся локальные переменные, параметры методов и структура вызовов. Stack управляется автоматически при вызове и выходе из методов.
+
+\item Какие объекты хранятся в Heap, а какие в Stack? \\
+В Heap хранятся все объекты и массивы, а также данные классов. В Stack хранятся примитивные локальные переменные и ссылки на объекты из Heap, используемые текущим потоком.
+\end{itemize}
+
+\subsection{Как работает ConcurrentHashMap}
+
+\begin{itemize}
+\item Какие операции в \texttt{ConcurrentHashMap} являются атомарными? \\
+Атомарными являются операции \texttt{putIfAbsent()}, \texttt{remove(key, value)}, \texttt{replace(key, oldValue, newValue)}. Они обеспечивают потокобезопасное добавление, удаление и замену без внешней синхронизации.
+
+\item Какие еще есть потокобезопасные коллекции? \\
+\texttt{CopyOnWriteArrayList}, \texttt{ConcurrentLinkedQueue}, \texttt{BlockingQueue} (\texttt{ArrayBlockingQueue}, \texttt{LinkedBlockingQueue}), \texttt{ConcurrentSkipListMap} и др.
+\end{itemize}
+
+\subsection{Как работает CopyOnWriteArrayList}
+
+\begin{itemize}
+\item Принцип работы \texttt{CopyOnWriteArrayList}: \\
+При изменении (добавлении/удалении) создаётся новая копия внутреннего массива. Это позволяет избежать блокировок при чтении, обеспечивая очень быструю потокобезопасную работу для сценариев с преобладанием чтений.
+
+\item Какие еще есть потокобезопасные коллекции? \\
+См. выше: \texttt{ConcurrentHashMap}, \texttt{ConcurrentLinkedQueue}, \texttt{BlockingQueue}, \texttt{ConcurrentSkipListSet} и др.
+\end{itemize}
+
+\subsection{Что такое ExecutorService, какие существуют реализации}
+
+\begin{itemize}
+\item Разница между \texttt{newFixedThreadPool}, \texttt{newCachedThreadPool} и \texttt{newScheduledThreadPool}: \\
+\texttt{newFixedThreadPool} — фиксированное количество потоков, переиспользуемых для задач. \\
+\texttt{newCachedThreadPool} — динамическое создание и удаление потоков, подходит для большого числа коротких задач. \\
+\texttt{newScheduledThreadPool} — пул для планирования задач с задержкой или периодическим выполнением.
+
+\item Как выбрать подходящий пул потоков? \\
+Фиксированный пул — для постоянной нагрузки. \\
+Cached — для непредсказуемых, кратковременных задач. \\
+Scheduled — для задач с таймерами и расписанием.
+\end{itemize}
+
+\subsection{Future vs CompletableFuture}
+
+\begin{itemize}
+\item Методы и ограничения \texttt{Future}: \\
+Методы: \texttt{get()}, \texttt{cancel()}, \texttt{isDone()}, \texttt{isCancelled()}. \\
+Ограничения: \texttt{get()} блокирует поток, отсутствует поддержка цепочек и колбеков.
+
+\item Как \texttt{CompletableFuture} решает проблемы \texttt{Future}? \\
+Добавляет асинхронные колбеки (\texttt{thenApply}, \texttt{thenAccept}), композицию задач, обработку ошибок, неблокирующее ожидание и поддержку цепочек задач.
+\end{itemize}
+
+\section{DB.}
+
+\subsection{Реляционные базы данных (SQL)}
+
+\begin{itemize}
+\item Что такое реляционные базы данных? \
+Реляционная база данных — это структура, в которой данные хранятся в виде связанных таблиц. Каждая таблица содержит строки (записи) и столбцы (поля).
+
+\item Основные понятия: \
+\textbf{Таблица (table)} — двумерная структура с данными. \
+\textbf{Связи (relations)} — логические связи между таблицами: \texttt{one-to-one}, \texttt{one-to-many}, \texttt{many-to-many}. \
+\textbf{Индекс (index)} — структура для ускорения поиска. \
+\textbf{Ключи:} \texttt{PRIMARY KEY} — уникальный идентификатор записи; \texttt{FOREIGN KEY} — ссылка на внешний ключ другой таблицы.
+
+\item Разница между SQL и NoSQL: \
+SQL — структурированные данные, фиксированная схема, поддержка сложных запросов (JOIN и др.). \
+NoSQL — гибкая схема, масштабируемость, разные модели хранения (документы, ключ-значение и т.д.).
+
+\item Популярные СУБД: \
+\textbf{PostgreSQL} — мощная, с поддержкой расширений, транзакций, JSON. \
+\textbf{MySQL} — широко используется, быстрая, простая. \
+Также: SQLite, Oracle, MS SQL Server.
+\end{itemize}
+
+\subsection{NoSQL базы данных}
+
+\begin{itemize}
+\item Что такое NoSQL? \
+NoSQL — это семейство СУБД, не использующих традиционную реляционную модель. Характеризуются горизонтальной масштабируемостью и гибкой схемой.
+
+\item Типы NoSQL: \
+\begin{itemize}
+\item \textbf{Документные} — MongoDB, CouchDB. Данные хранятся в виде документов (обычно JSON/BSON).
+\item \textbf{Ключ-значение} — Redis, DynamoDB. Простейшая модель: ключ → значение.
+\item \textbf{Графовые} — Neo4j. Хранят вершины и связи между ними.
+\item \textbf{Колонно-ориентированные} — Cassandra, HBase. Эффективны при работе с большими объемами данных.
+\end{itemize}
+
+\item Отличие от реляционных СУБД: \
+NoSQL не требует жёсткой схемы, проще масштабируется, но хуже поддерживает сложные связи и транзакции.
+
+\item Когда NoSQL лучше SQL: \
+\begin{itemize}
+\item Большие объемы неструктурированных или слабо структурированных данных.
+\item Высокая нагрузка на чтение/запись.
+\item Нет необходимости в сложных связях и транзакциях.
+\end{itemize}
+\end{itemize}
+
+\subsection{Основные понятия в SQL, виды запросов}
+
+\begin{itemize}
+\item Основные SQL-запросы: \
+\texttt{SELECT} — выборка данных. \
+\texttt{INSERT} — добавление записей. \
+\texttt{UPDATE} — изменение данных. \
+\texttt{DELETE} — удаление записей.
+
+\item Как работает \texttt{JOIN}? \
+\texttt{JOIN} объединяет строки из двух таблиц по связанным полям:
+\begin{itemize}
+\item \texttt{INNER JOIN} — только совпадающие записи.
+\item \texttt{LEFT JOIN} — все записи из левой таблицы и совпадения из правой.
+\item \texttt{RIGHT JOIN}, \texttt{FULL OUTER JOIN} — аналогично.
+\end{itemize}
+
+\item Что такое подзапросы (subqueries)? \
+Это запрос внутри другого запроса.
+\end{itemize}
+
+\subsection{Транзакции и их свойства}
+
+\begin{itemize}
+\item Что такое транзакция? \
+Последовательность операций с данными, которая выполняется как единое целое.
+
+\item Свойства транзакций (ACID): \
+\begin{itemize}
+    \item Atomicity (атомарность) – выполнены либо все подоперации, либо никакие.
+    \item Consistency (согласованность) – каждая успешная транзакция фиксирует только допустимые результаты.
+    \item Isolation (изолированность) – параллельные транзакции не влияют на результаты друг друга.
+    \item Durability (долговечность) – вне зависимости от сбоев системы результаты успешных транзакций сохранятся в системе
+\end{itemize}
+
+\item Уровни изоляции транзакций: \
+\begin{center}
+    \begin{tabular}{|c|l|}
+        \hline
+        \sql{READ UNCOMMITTED} & Чтение незафиксированных данных. \\
+        \hline
+        \sql{READ COMMITTED} & Чтение фиксированных данных. \\
+        \hline
+        \sql{REPEATABLE READ} & Повторяемость чтения. \\
+        \hline
+        \sql{SERIALIZABLE} & Упорядочиваемость. \\
+        \hline
+    \end{tabular}
+\end{center}
+\begin{itemize}
+    \item Потерянное обновление - изменение одного блока данных несколькими транзакциями.
+    \item “Грязное” чтение - чтение данных, измененных впоследствии откатившейся транзакцией.       
+    \item Неповторяющееся чтение - повторное чтение измененных данных одной и той же транзакцией.
+    \item Чтение фантомов - взаимосвязанные критерии изменения данных двумя транзакциями.
+\end{itemize}
+\item Как завершить транзакцию: \
+\texttt{COMMIT} — подтвердить изменения. \
+\texttt{ROLLBACK} — откатить транзакцию.
+\end{itemize}
+\subsection{Что такое ORM (Object-Relational Mapping)}
+
+\begin{itemize}
+\item Как ORM преобразует объекты в таблицы? \
+ORM отображает классы и их поля на таблицы и колонки в реляционной БД. Объекты сохраняются в БД автоматически, например, класс \texttt{User} становится таблицей \texttt{users}.
+
+\item Какие есть популярные ORM-фреймворки? \
+Hibernate, JPA (спецификация), Spring Data JPA, MyBatis.
+\end{itemize}
+
+\subsection{Что такое миграции базы данных}
+
+\begin{itemize}
+\item Какие есть инструменты для миграций? \
+Flyway, Liquibase — позволяют версионировать схему БД и управлять изменениями.
+
+\end{itemize}
+
+\subsection{Что такое индексы, какие бывают}
+
+\begin{itemize}
+\item Как индексы ускоряют запросы? \
+Позволяют быстро находить строки по ключу (аналогично оглавлению), избегая полного сканирования таблицы.
+
+\item Какие недостатки есть у индексов? \
+Замедление вставки/обновления данных, увеличение размера БД.
+\end{itemize}
+
+\subsection{Что такое JDBC}
+
+JDBC — это низкоуровневый способ работы с базой данных. Он предоставляет «сырой» доступ к SQL и требует писать много кода вручную. ORM-фреймворки, такие как Hibernate, работают поверх JDBC, абстрагируя от него.
+
+\begin{itemize}
+\item Как выполнить SQL-запрос через JDBC? \
+Через \texttt{Connection} создаётся \texttt{Statement} или \texttt{PreparedStatement}, выполняется \texttt{executeQuery()}, результаты читаются через \texttt{ResultSet}.
+
+\item В чем разница между \texttt{Statement} и \texttt{PreparedStatement}? \
+\texttt{PreparedStatement} компилируется заранее, безопасен от SQL-инъекций, эффективен при многократных вызовах.
+\end{itemize}
+
+\subsection{Что такое Primary Key}
+
+\begin{itemize}
+\item Какие ограничения накладываются на колонку с Primary Key? \
+Значения должны быть уникальными и не \texttt{NULL}.
+
+\item Можно ли изменить значение Primary Key после его создания? \
+Технически — да, но это может нарушить связи, если ключ используется как внешний в других таблицах.
+\end{itemize}
+
+\subsection{Что такое Foreign Key}
+
+\begin{itemize}
+\item Что произойдет, если попытаться удалить запись, на которую ссылается Foreign Key? \
+Будет ошибка, если не задано поведение (\texttt{ON DELETE CASCADE}, \texttt{SET NULL} и др.).
+
+\item Как Foreign Key помогает избежать "висячих" ссылок? \
+Он гарантирует, что значения в столбце-ссылке существуют в родительской таблице.
+\end{itemize}
+
+\subsection{Создание таблицы в SQL}
+
+\begin{itemize}
+\item Какие типы данных можно использовать для колонок? \
+\texttt{INT}, \texttt{VARCHAR}, \texttt{TEXT}, \texttt{BOOLEAN}, \texttt{DATE}, \texttt{TIMESTAMP} и др.
+
+\item Как добавить ограничение NOT NULL или PRIMARY KEY? \
+Пример: \texttt{CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(50) NOT NULL);}
+\end{itemize}
+
+\subsection{Типы JOIN}
+
+\begin{itemize}
+\item В чем разница между INNER JOIN и LEFT JOIN? \
+\texttt{INNER JOIN} — только совпадающие строки.
+\texttt{LEFT JOIN} — все из левой таблицы, даже если нет совпадений.
+\end{itemize}
+
+\subsection{Как работает GROUP BY в SQL}
+
+\begin{itemize}
+\item Для чего используется \texttt{COUNT()} с \texttt{GROUP BY}? \
+Для подсчета количества строк в каждой группе.
+
+\item Пример запроса: \
+\texttt{SELECT country, COUNT(*) FROM users GROUP BY country;}
+\end{itemize}
+
+\subsection{ACID}
+
+\begin{itemize}
+\item Пример нарушения Atomicity: \
+Перевод денег с одного счёта на другой: если деньги списались, но не зачислились — нарушена атомарность, пользователь теряет деньги.
+\end{itemize}
+
+\subsection{Optimistic и Pessimistic блокировки}
+Пессимистическая блокировка - считаем, что конфликт вероятен, поэтому блокируем запись заранее. \\
+Оптимистическая блокировка - считаем, что конфликт маловероятен, проверяем при сохранении.
+
+\subsection{CAP-теорема}
+\begin{itemize}
+    \item Consistency. При чтении гарантированно будут
+    получены наиболее актуальные данные, либо ошибка.
+    \item Availability. Любой запрос к распределённой системе
+    завершается корректным откликом, но без гарантии
+    актуальности данных.
+    \item Partitioning. Система работает несмотря на потери /
+    задержки в передачи сообщений между узлами.
+\end{itemize}
+
+\begin{itemize}
+\item Какие два свойства выбирают чаще всего? \
+В распределённых БД — \texttt{AP} (доступность + устойчивость к разделению) или \texttt{CP} (согласованность + устойчивость).
+\end{itemize}
+
+\subsection{BASE в NoSQL}
+\subsubsection*{ACID $\rightarrow$ BASE.}
+
+    \begin{itemize}
+        \item Basic Available (базовая доступность).
+        \begin{itemize}
+            \item Система обеспечивает базовую доступность, т. е.
+            каждый запрос будет обязательно завершён, успешно
+            или нет;
+            \item Сбой части системы приводит к отказу в обслуживании
+            только части пользователей.
+        \end{itemize}
+        \item Soft State (неустойчивое состояние).
+        \begin{itemize}
+            \item Система пребывает в гибком состоянии — очерёдность
+            записей соблюдать необязательно, реплики могут
+            какое-то время находиться в несогласованном
+            состоянии, а система может самостоятельно изменяться
+            для достижения согласованности;
+            \item Отказ от гарантий хранения промежуточных данных.
+        \end{itemize}
+        \item Eventually Consistent (итоговая согласованность).
+        \begin{itemize}
+            \item Все данные всё равно достигнут согласованности.
+            \item Существуют моменты в работе системы, когда можно
+            видеть несогласованные данные.
+        \end{itemize}
+    \end{itemize}
+\subsubsection*{Подвовросы.}
+\begin{itemize}
+\item Как BASE отличается от ACID? \
+BASE допускает eventual consistency, отказ от полной согласованности ради доступности и масштабируемости.
+
+\item Когда BASE предпочтительнее? \
+Когда допустимы временные несогласованности — социальные сети, логи, кэши.
+\end{itemize}
+
+\subsection{Репликация в БД}
+
+\begin{itemize}
+\item Проблемы: \
+Запаздывания (lag), конфликты при записи в несколько реплик, потеря согласованности.
+
+\item Разница между репликацией и шардированием: \
+Репликация — копии одних и тех же данных. Шардирование — разделение данных между узлами.
+\end{itemize}
+
+\subsection{Apache Cassandra}
+
+\begin{itemize}
+\item Как обеспечивает отказоустойчивость и масштабируемость? \
+Данные дублируются на несколько узлов, нет единой точки отказа, распределённое хранилище.
+
+\item Для каких типов данных подходит? \
+Логи, сенсорные данные, временные ряды, данные с высокой скоростью записи и большого объема.
+\end{itemize}
+
+\subsection{Cassandra vs. ScyllaDB}
+
+\begin{itemize}
+\item В чем разница? \
+ScyllaDB переписана на C++ (Cassandra — Java), использует асинхронную модель на основе \texttt{Seastar}.
+
+\item Почему ScyllaDB быстрее? \
+Меньше задержек, лучше использование ресурсов.
+
+\item Как влияет архитектура «shard per core»? \
+Каждое ядро CPU обслуживает свой shard (часть данных) — нет блокировок, масштабируемость по ядрам.
+\end{itemize}
+
+\subsection{Keyspace и Column Family в Cassandra}
+
+\begin{itemize}
+\item Что такое Primary Key? \
+Уникальный идентификатор строки в таблице. Состоит из partition key и (опционально) clustering key.
+
+\item Partition key — что это? \
+Определяет, на каком узле будет храниться строка. Строки с одинаковым ключом — на одном узле.
+
+\item Clustering key — что это? \
+Определяет порядок строк внутри одного partition (аналог сортировки по колонке).
+\end{itemize}
+
+\section{Spring, Мониторинг.}
+\subsection{AOP в Spring}
+
+\begin{itemize}
+\item Какие основные понятия AOP (аспект, совет, точка среза, соединение)? \\
+\textbf{Аспект (Aspect)} — модуль кода, содержащий кросс-секциональную функциональность (например, логирование). \\
+\textbf{Совет (Advice)} — действие, выполняемое в определённой точке выполнения (например, перед методом). \\
+\textbf{Точка среза (Pointcut)} — выражение, указывающее, где должен применяться совет. \\
+\textbf{Соединение (Join point)} — конкретная точка во времени исполнения (например, вызов метода).
+
+\item Какие типы советов существуют в Spring AOP? \\
+\begin{itemize}
+\item \texttt{@Before} — вызывается до выполнения метода.
+\item \texttt{@After} — вызывается после выполнения (в любом случае).
+\item \texttt{@AfterReturning} — вызывается при успешном завершении метода.
+\item \texttt{@AfterThrowing} — вызывается при исключении.
+\item \texttt{@Around} — оборачивает выполнение метода, даёт полный контроль.
+\end{itemize}
+\end{itemize}
+
+\subsection{IoC в Spring}
+Инверсия управления — это принцип, при котором управление зависимостями и созданием объектов передаётся фреймворку, а не осуществляется вручную в коде.
+\begin{itemize}
+\item Чем отличается управление объектами через \texttt{new} от IoC-контейнера? \\
+Создание через \texttt{new} означает ручное управление зависимостями. IoC-контейнер создаёт и управляет объектами, внедряет зависимости автоматически.
+
+\item Какие способы внедрения зависимостей поддерживает Spring? \\
+\begin{itemize}
+\item Через конструктор (рекомендуется).
+\item Через сеттеры.
+\item Через поля (\texttt{@Autowired}, нежелательно из-за невозможности тестирования).
+\end{itemize}
+\end{itemize}
+
+\subsection{Что такое Spring Bean}
+
+\begin{itemize}
+\item Какие аннотации используются для создания бинов? \\
+\texttt{@Component} — базовая аннотация. \\
+\texttt{@Service}, \texttt{@Repository}, \texttt{@Controller} — специализации для конкретных слоёв.
+
+\item В чём разница между \texttt{@Autowired} и внедрением через конструктор? \\
+\texttt{@Autowired} можно использовать для полей, сеттеров или конструкторов. Внедрение через конструктор предпочтительнее: облегчает тестирование и делает зависимости явными.
+\end{itemize}
+
+\subsection{Жизненный цикл Spring Bean}
+
+\begin{itemize}
+\item Как работают аннотации \texttt{@PostConstruct} и \texttt{@PreDestroy}? \\
+\texttt{@PostConstruct} — метод вызывается сразу после создания и внедрения зависимостей. \\
+\texttt{@PreDestroy} — метод вызывается перед уничтожением бина (только для singleton).
+
+\item Почему для бинов с \texttt{@Scope("prototype")} не вызывается \texttt{@PreDestroy}? \\
+Контейнер не отслеживает prototype-бины после их создания, поэтому не вызывает метод \texttt{@PreDestroy}.
+\end{itemize}
+
+\subsection{Scope бинов}
+В Spring scope (область видимости) бина определяет, как часто и в каком контексте создаются объекты, управляемые Spring-контейнером. По умолчанию все бины — singleton, но есть и другие области видимости, особенно актуальные для веб-приложений.
+\begin{itemize}
+\item Чем отличается \texttt{singleton} от \texttt{prototype}? \\
+\texttt{singleton} — один бин на контейнер. \\
+\texttt{prototype} — каждый запрос даёт новый экземпляр.
+
+\item Когда следует использовать \texttt{request} и \texttt{session} scope? \\
+\texttt{request} — бин создаётся на каждый HTTP-запрос (например, для DTO). \\
+\texttt{session} — бин живёт на протяжении всей сессии пользователя.
+\end{itemize}
+\subsection{Что такое DispatcherServlet}
+
+\begin{itemize}
+\item Какие компоненты участвуют в обработке HTTP-запроса? \\
+\textbf{DispatcherServlet} — центральная точка, обрабатывающая HTTP-запросы. Он взаимодействует со следующими компонентами:
+\begin{itemize}
+  \item \textbf{HandlerMapping} — определяет, какой контроллер должен обработать запрос.
+  \item \textbf{HandlerAdapter} — вызывает соответствующий метод контроллера.
+  \item \textbf{ViewResolver} — определяет, какое представление (View) отобразить.
+  \item \textbf{View} — рендерит HTML-ответ (например, JSP, Thymeleaf).
+\end{itemize}
+
+\item Как работает связь между контроллером и представлением (View)? \\
+Контроллер возвращает имя представления или объект \texttt{ModelAndView}. \texttt{ViewResolver} находит нужный шаблон, а \texttt{Model} передаёт в него данные.
+\end{itemize}
+
+\subsection{Маппинг HTTP-запросов в Spring}
+
+\begin{itemize}
+\item Какие аннотации используются для маппинга HTTP-запросов? \\
+\begin{itemize}
+  \item \texttt{@GetMapping}, \texttt{@PostMapping}, \texttt{@PutMapping}, \texttt{@DeleteMapping} — сокращения для \texttt{@RequestMapping(method = ...)}.
+\end{itemize}
+
+\item Как извлечь параметр из URL с помощью \texttt{@PathVariable}? \\
+Пример:
+\begin{lstlisting}[style=javastyle]
+@GetMapping("/user/{id}")
+public String getUser(@PathVariable Long id) {
+  ...
+}
+\end{lstlisting}
+
+\item Чем отличается \texttt{@RequestParam} от \texttt{@ModelAttribute}? \\
+\texttt{@RequestParam} извлекает отдельный параметр запроса (например, \texttt{?name=...}). \\
+\texttt{@ModelAttribute} используется для связывания всех параметров с объектом (например, из формы).
+\end{itemize}
+
+\subsection{Валидация в Spring MVC}
+
+\begin{itemize}
+\item Как добавить валидацию с использованием Hibernate Validator? \\
+Добавить аннотации к полям модели: \texttt{@NotBlank}, \texttt{@Email}, \texttt{@Size}, и т.д. \\
+Пример:
+\begin{lstlisting}[style=javastyle]
+public class User {
+  @NotBlank
+  private String name;
+
+  @Email
+  private String email;
+}
+\end{lstlisting}
+
+\item Как обработать ошибки валидации в контроллере? \\
+Добавить аргумент \texttt{BindingResult} после объекта:
+\begin{lstlisting}[style=javastyle]
+@PostMapping("/submit")
+public String submit(@Valid User user, BindingResult result) {
+  if (result.hasErrors()) {
+    return "form";
+  }
+  return "success";
+}
+\end{lstlisting}
+\end{itemize}
+
+\subsection{Обработка исключений в контроллерах Spring}
+
+\begin{itemize}
+\item Как обработать исключение локально с помощью \texttt{@ExceptionHandler}? \\
+Добавить метод в контроллер:
+\begin{lstlisting}[style=javastyle]
+@ExceptionHandler(ResourceNotFoundException.class)
+public ResponseEntity<String> handleNotFound() {
+  return ResponseEntity.status(404).body("Not Found");
+}
+\end{lstlisting}
+
+\item Что такое \texttt{@ControllerAdvice} и для чего он используется? \\
+\texttt{@ControllerAdvice} позволяет централизованно обрабатывать исключения, применять \texttt{@ExceptionHandler} ко всем контроллерам.
+
+\item Как вернуть клиенту JSON-ответ при ошибке? \\
+Использовать аннотацию \texttt{@ResponseBody} или вернуть \texttt{ResponseEntity<\ldots>} из метода-обработчика.
+\end{itemize}
+
+\subsection{Что такое интерцепторы в Spring}
+В Spring интерцепторы (interceptors) — это компоненты, которые позволяют перехватывать HTTP-запросы до и после обработки их контроллерами. Они похожи на фильтры, но работают на уровне Spring MVC и дают более тонкий контроль над обработкой запросов.
+\begin{itemize}
+\item Для каких задач используются интерцепторы в Spring MVC? \\
+Для перехвата и обработки запросов до и после вызова контроллера: логирование, аутентификация, измерение времени выполнения и т.д.
+
+\item Как зарегистрировать интерцептор в конфигурации? \\
+Через реализацию \texttt{WebMvcConfigurer}:
+\begin{lstlisting}[style=javastyle]
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+  @Override
+  public void addInterceptors(InterceptorRegistry registry) {
+    registry.addInterceptor(new MyInterceptor());
+  }
+}
+\end{lstlisting}
+
+\item Какие методы есть у \texttt{HandlerInterceptor}? \\
+\begin{itemize}
+  \item \texttt{preHandle()} — вызывается до контроллера.
+  \item \texttt{postHandle()} — вызывается после контроллера, до View.
+  \item \texttt{afterCompletion()} — вызывается после рендеринга View.
+\end{itemize}
+\end{itemize}
+\subsection{@Controller vs. @RestController}
+
+\begin{itemize}
+\item Чем отличается \texttt{@Controller} от \texttt{@RestController}? \\
+\texttt{@Controller} возвращает имя View (например, JSP), а \texttt{@RestController} — это сокращение для \texttt{@Controller + @ResponseBody}, автоматически возвращает JSON.
+
+\item Как вернуть JSON-ответ с помощью \texttt{@ResponseBody}? \\
+Пример использования в контроллере:
+\begin{lstlisting}[style=javastyle]
+@Controller
+public class UserController {
+  @GetMapping("/user/{id}")
+  @ResponseBody
+  public User getUser(@PathVariable Long id) {
+    return userService.findById(id);
+  }
+}
+\end{lstlisting}
+
+\item Какие HTTP-статусы следует использовать в REST (\texttt{ResponseEntity})? \\
+Пример с управлением статусом:
+\begin{lstlisting}[style=javastyle]
+@GetMapping("/user/{id}")
+public ResponseEntity<User> getUser(@PathVariable Long id) {
+  User user = userService.findById(id);
+  if (user == null) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+  }
+  return ResponseEntity.ok(user);
+}
+\end{lstlisting}
+Часто используемые статусы: \texttt{200 OK}, \texttt{201 Created}, \texttt{400 Bad Request}, \texttt{404 Not Found}, \texttt{500 Internal Server Error}.
+\end{itemize}
+
+\subsection{Транзакции в Spring: как работают, свойства}
+
+\begin{itemize}
+\item Какие параметры можно задать (\texttt{isolation}, \texttt{propagation})? \\
+Аннотация \texttt{@Transactional} поддерживает:
+\begin{itemize}
+  \item \texttt{isolation} — уровень изоляции (например, \texttt{READ\_COMMITTED}, \texttt{SERIALIZABLE}).
+  \item \texttt{propagation} — поведение вложенных транзакций (\texttt{REQUIRED}, \texttt{REQUIRES\_NEW} и др.).
+  \item \texttt{timeout}, \texttt{readOnly}, \texttt{rollbackFor}.
+\end{itemize}
+
+\item В каких случаях транзакция откатывается (rollback)? \\
+По умолчанию — при непроверяемых исключениях (\texttt{RuntimeException}). Для проверяемых — нужно указывать \texttt{rollbackFor}.
+\end{itemize}
+
+\subsection{Жизненный цикл сущности в Hibernate}
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|p{10cm}|}
+    \hline
+    \textbf{Состояние} & \textbf{Описание} \\
+    \hline
+    \textbf{Transient} & Объект создан с помощью \texttt{new}, \textbf{не привязан к Hibernate}, \textbf{не сохранён} в БД. \\
+    \hline
+    \textbf{Persistent} & Объект связан с активной \texttt{Session} Hibernate. Все изменения отслеживаются. \\
+    \hline
+    \textbf{Detached} & Объект \textbf{раньше был persistent}, но \texttt{Session} закрыта. Не отслеживается. \\
+    \hline
+    \textbf{Removed} (optional) & Сущность помечена на удаление. Физически будет удалена при \texttt{flush} / \texttt{commit}. \\
+    \hline
+    \end{tabular}
+    \caption{Состояния объектов в Hibernate}
+    \end{table}    
+
+\begin{itemize}
+\item Какие аннотации используются для маппинга сущностей в Hibernate? \\
+\begin{lstlisting}[style=javastyle]
+@Entity
+@Table(name = "users")
+public class User {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  @Column(name = "username")
+  private String username;
+}
+\end{lstlisting}
+
+\item Как Hibernate отслеживает изменения в сущностях (Dirty Checking)? \\
+Hibernate сохраняет состояние сущности при загрузке, и при коммите сравнивает с текущим состоянием, обновляя базу только при изменениях.
+\end{itemize}
+
+\subsection{Связи между сущностями в Hibernate}
+
+\begin{itemize}
+\item Какие типы связей между сущностями поддерживает Hibernate? \\
+\texttt{@OneToOne}, \texttt{@OneToMany}, \texttt{@ManyToOne}, \texttt{@ManyToMany}.
+
+\item Как работают \texttt{@OneToMany}, \texttt{@ManyToOne}, \texttt{@ManyToMany}? \\
+\begin{itemize}
+  \item \texttt{@ManyToOne} — много сущностей ссылаются на одну (внешний ключ).
+  \item \texttt{@OneToMany} — коллекция сущностей, связанных с одной.
+  \item \texttt{@ManyToMany} — связь через промежуточную таблицу.
+\end{itemize}
+
+\item В чем разница между \texttt{EAGER} и \texttt{LAZY} загрузкой? \\
+\texttt{EAGER} загружает сразу связанные данные, \texttt{LAZY} — отложенная загрузка при обращении.
+\end{itemize}
+
+\subsection{Что такое Hibernate}
+
+\begin{itemize}
+\item Как Hibernate связан с JPA? \\
+Hibernate — популярная реализация спецификации JPA.
+
+\item Какие есть стратегии загрузки данных (\texttt{EAGER}, \texttt{LAZY})? \\
+Определяют момент загрузки связанных данных: сразу или по требованию.
+
+\item Как работает кэширование в Hibernate? \\
+Используются:
+\begin{itemize}
+  \item Первый уровень кэш — сессия (кэш на время транзакции).
+  \item Второй уровень кэш — глобальный, опционально (например, Ehcache).
+\end{itemize}
+\end{itemize}
+\subsection{Что такое JPA}
+
+\begin{itemize}
+\item Какие есть основные аннотации? \\
+\texttt{@Entity}, \texttt{@Table}, \texttt{@Id}, \texttt{@Column}, \texttt{@GeneratedValue} — используются для маппинга сущностей на таблицы базы данных.
+\begin{lstlisting}[style=javastyle]
+@Entity
+@Table(name = "users")
+public class User {
+  @Id
+  @GeneratedValue
+  private Long id;
+
+  @Column(name = "username")
+  private String name;
+}
+\end{lstlisting}
+
+\item Как работают каскадные операции (\texttt{CascadeType})? \\
+Они определяют, какие действия (persist, merge, remove и др.) должны быть применены автоматически к связанным сущностям.
+
+\item Что такое \texttt{EntityManager} и \texttt{@PersistenceContext}? \\
+\texttt{EntityManager} — основной API для работы с сущностями в JPA. \\
+\texttt{@PersistenceContext} внедряет EntityManager в компонент:
+\begin{lstlisting}[style=javastyle]
+@PersistenceContext
+private EntityManager em;
+\end{lstlisting}
+\end{itemize}
+
+\subsection{Проблема LazyInitializationException}
+
+\begin{itemize}
+\item Почему возникает эта ошибка? \\
+Ошибка \texttt{LazyInitializationException} возникает, когда происходит обращение к LAZY-загруженному полю вне контекста открытой сессии/транзакции.
+
+\item Как избежать проблем с \texttt{LazyInitializationException}? \\
+\begin{itemize}
+  \item Использовать \texttt{fetch = FetchType.EAGER} (нежелательно для больших графов).
+  \item Открывать сессию до конца обработки запроса (Open Session in View).
+  \item Явно загружать данные с помощью JOIN FETCH.
+\end{itemize}
+
+\item Как правильно работать с LAZY-загрузкой внутри транзакции? \\
+Загрузка связанных сущностей должна происходить внутри метода с аннотацией \texttt{@Transactional}.
+\end{itemize}
+
+\subsection{Проблема N+1 в Hibernate}
+
+\begin{itemize}
+\item Пример возникновения проблемы: \\
+Если при загрузке списка пользователей каждый раз отдельно загружается их профиль:
+\begin{lstlisting}[style=javastyle]
+List<User> users = em.createQuery("from User", User.class).getResultList();
+for (User u : users) {
+  System.out.println(u.getProfile().getBio());
+}
+\end{lstlisting}
+
+\item Как избежать N+1 проблемы? \\
+Использовать \texttt{JOIN FETCH}:
+\begin{lstlisting}[style=javastyle]
+List<User> users = em.createQuery(
+  "select u from User u join fetch u.profile", User.class).getResultList();
+\end{lstlisting}
+
+\item Какие способы решения существуют? \\
+\begin{itemize}
+  \item Использовать \texttt{JOIN FETCH}.
+  \item Настроить batch-fetching в Hibernate.
+  \item Использовать DTO-проекции.
+\end{itemize}
+\end{itemize}
+
+\subsection{Как работает Spring Security}
+
+\begin{itemize}
+\item Как настроить аутентификацию через базу данных? \\
+Создать таблицы \texttt{users} и \texttt{authorities}, настроить \texttt{UserDetailsService} или использовать JDBC-конфигурацию:
+\begin{lstlisting}[style=javastyle]
+@Autowired
+DataSource dataSource;
+
+@Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  http.jdbcAuthentication().dataSource(dataSource);
+  return http.build();
+}
+\end{lstlisting}
+
+\item Как реализовать JWT-аутентификацию в Spring Security? \\
+Добавить фильтр, который проверяет и валидирует JWT из заголовка \texttt{Authorization}, и добавляет пользователя в \texttt{SecurityContext}.
+\end{itemize}
+
+\subsection{CSRF и XSS в Spring Security}
+
+\begin{itemize}
+\item Как Spring Security защищает от CSRF и XSS? \\
+CSRF — генерирует токен и проверяет его в каждом запросе. \\
+XSS — фильтрует ввод и можно дополнительно настроить Content Security Policy (CSP).
+
+\item Почему важно не отключать CSRF-защиту в REST API? \\
+Даже если REST не использует формы, браузерные атаки (например, через XHR) возможны при авторизации сессией. Лучше использовать stateless и JWT.
+
+\item Как настроить Content Security Policy (CSP)? \\
+Добавить заголовок CSP:
+\begin{lstlisting}[style=javastyle]
+http.headers().contentSecurityPolicy("script-src 'self'");
+\end{lstlisting}
+\end{itemize}
+\subsection{Spring Actuator}
+
+\begin{itemize}
+\item Какие основные эндпоинты предоставляет Actuator и для чего они нужны?
+\begin{itemize}
+  \item \texttt{/actuator/health} — проверка статуса приложения (живое/нет).
+  \item \texttt{/actuator/metrics} — системные метрики: память, CPU, загрузка.
+  \item \texttt{/actuator/info} — произвольная информация о приложении (например, версия).
+\end{itemize}
+
+\item Как защитить эндпоинты Actuator в продакшене? \\
+\begin{itemize}
+  \item Отключать ненужные эндпоинты в \texttt{application.yml}.
+  \item Ограничить доступ с помощью Spring Security.
+  \item Разрешить доступ только из внутренней сети.
+\end{itemize}
+\end{itemize}
+
+\subsection{Четыре золотых сигнала мониторинга}
+
+\begin{itemize}
+\item \textbf{Latency} — время отклика на запрос. Рост латентности — признак перегрузки.
+\item \textbf{Traffic} — объем запросов или нагрузка (например, RPS). Увеличение трафика требует масштабирования.
+\item \textbf{Errors} — процент ошибочных запросов (4xx/5xx). Указывает на сбои.
+\item \textbf{Saturation} — насколько система приближается к лимитам (CPU, память, очереди).
+\end{itemize}
+
+\subsection{SLI, SLO, SLA}
+
+\begin{itemize}
+\item \textbf{SLI (Service Level Indicator)} — числовой показатель качества сервиса (например, процент успешных запросов).
+\item \textbf{SLO (Service Level Objective)} — целевое значение SLI (например, 99.9\% успешных запросов за месяц).
+\item \textbf{SLA (Service Level Agreement)} — формальное соглашение с заказчиком, основанное на SLO.
+
+\item Как квантили помогают в определении SLI? \\
+Квантили (например, p95, p99) показывают, сколько процентов запросов укладываются в заданную задержку, и могут быть SLI по латентности.
+
+\item Пример SLO: \\
+\texttt{99.9\% всех запросов к /api/* должны завершаться менее чем за 300 мс за последние 30 дней}.
+\end{itemize}
+
+\subsection{Histogram и Summary в Prometheus}
+
+\begin{itemize}
+\item \textbf{Histogram} — агрегирует данные по заранее определённым bucket'ам и позволяет вычислять квантили на стороне Prometheus.
+\item \textbf{Summary} — квантили вычисляются на стороне клиента и не могут быть агрегированы между экземплярами.
+\item \textbf{Вывод:} Histogram подходит для распределённых систем, где важна агрегация.
+\end{itemize}
+
+\subsection{Prometheus + Grafana: архитектура и push/pull-модель}
+
+\begin{itemize}
+\item Prometheus — система мониторинга и хранения метрик (в pull-модели).
+\item Grafana — система визуализации, строит графики по данным Prometheus.
+\item \textbf{Pull-модель:} Prometheus опрашивает приложения по HTTP (встроенный HTTP-сервер с метриками).
+\item \textbf{Push-модель:} приложения отправляют метрики в промежуточный push-gateway, который опрашивается Prometheus.
+
+\item \textbf{Разница:} 
+\begin{itemize}
+  \item Pull проще и предпочтительнее для долгоживущих сервисов.
+  \item Push — полезен для короткоживущих задач (batch jobs), где нет смысла держать HTTP-сервер.
+\end{itemize}
+\end{itemize}
+\section{Sync/async.}
+\subsection{Что такое OpenAPI}
+
+\begin{itemize}
+\item Какие проблемы он решает? \\
+OpenAPI (ранее Swagger) позволяет стандартизировать описание REST API, обеспечивая единый формат для клиентов, документации и генерации кода.
+
+\item Как OpenAPI помогает в документировании REST API? \\
+OpenAPI-спецификация описывает эндпоинты, методы, параметры, модели данных и коды ответов, что позволяет:
+\begin{itemize}
+  \item Автоматически генерировать документацию.
+  \item Упростить интеграцию для клиентов.
+  \item Проверять корректность запросов и ответов.
+\end{itemize}
+
+\item Какие инструменты используются для генерации документации в Spring? \\
+\texttt{springdoc-openapi}, \texttt{Swagger UI}, \texttt{OpenAPI Generator}.
+\end{itemize}
+
+\subsection{Модель OSI}
+Модель OSI (Open Systems Interconnection) — это семиуровневая концептуальная модель, которая описывает, как данные передаются по сети от одного устройства к другому. Она помогает структурировать и стандартизировать работу сетевых протоколов.
+\begin{itemize}
+\item Уровни и примеры протоколов:
+\begin{enumerate}
+  \item \textbf{Физический} — Ethernet (физические соединения).
+  \item \textbf{Канальный} — Ethernet, PPP.
+  \item \textbf{Сетевой} — IP, ICMP.
+  \item \textbf{Транспортный} — TCP, UDP.
+  \item \textbf{Сеансовый} — NetBIOS, RPC.
+  \item \textbf{Представления} — TLS, JPEG, ASCII.
+  \item \textbf{Прикладной} — HTTP, FTP, DNS, SMTP.
+\end{enumerate}
+\end{itemize}
+
+\subsection{Что такое HTTP: работа, параметры}
+
+\begin{itemize}
+\item Какие уровни модели OSI охватывает HTTP? \\
+HTTP — прикладной уровень (7), использует TCP с IP (уровни 4 и 3).
+
+\item Как структурирован HTTP-запрос и HTTP-ответ? \\
+\textbf{Запрос:}
+\begin{itemize}
+  \item Стартовая строка (метод, путь, версия).
+  \item Заголовки (headers).
+  \item Тело (необязательно).
+\end{itemize}
+
+\textbf{Ответ:}
+\begin{itemize}
+  \item Статусная строка (версия, код, сообщение).
+  \item Заголовки.
+  \item Тело (обычно JSON, HTML и т.д.).
+\end{itemize}
+\end{itemize}
+
+\subsection{Что такое REST API}
+REST API (Representational State Transfer API) — это архитектурный стиль для построения веб-сервисов, в котором используется HTTP и принципы REST для взаимодействия между клиентом и сервером.
+\begin{itemize}
+\item Почему REST API предпочтительнее использования одного метода (POST)? \\
+REST использует стандартные HTTP-методы для CRUD-операций (GET, POST, PUT, DELETE), что делает API:
+\begin{itemize}
+  \item Предсказуемым и читаемым.
+  \item Кэшируемым (например, GET).
+  \item Совместимым с HTTP-инфраструктурой.
+\end{itemize}
+
+\item Как REST API связан с HTTP-методами и ресурсами? \\
+Каждый ресурс (например, \texttt{/users}) управляется через соответствующие HTTP-методы:
+\begin{itemize}
+  \item \texttt{GET /users} — получить список.
+  \item \texttt{POST /users} — создать.
+  \item \texttt{PUT /users/1} — обновить.
+  \item \texttt{PATCH /users/1} — частично обновить.
+  \item \texttt{DELETE /users/1} — удалить.
+\end{itemize}
+\end{itemize}
+
+\subsection{Коды состояния HTTP}
+
+\begin{itemize}
+\item Примеры кодов:
+\begin{itemize}
+  \item \textbf{2xx (успех):} 200 OK, 201 Created.
+  \item \textbf{3xx (перенаправление):} 301 Moved Permanently, 302 Found.
+  \item \textbf{4xx (ошибка клиента):} 400 Bad Request, 404 Not Found.
+  \item \textbf{5xx (ошибка сервера):} 500 Internal Server Error, 503 Service Unavailable.
+\end{itemize}
+
+\item Как обрабатывать ошибки в REST API?
+\begin{itemize}
+  \item Возвращать корректные коды (например, 404, если ресурс не найден).
+  \item Использовать \texttt{ResponseEntity} с телом ошибки:
+\begin{lstlisting}[style=javastyle]
+return ResponseEntity.status(404)
+                     .body("User not found");
+\end{lstlisting}
+  \item Логировать ошибки и не раскрывать чувствительную информацию.
+\end{itemize}
+\end{itemize}
+\subsection{Синхронное и асинхронное программирование}
+
+\begin{itemize}
+\item Какие есть преимущества и недостатки асинхронности? \\
+\textbf{Преимущества:}
+\begin{itemize}
+  \item Более высокая производительность при работе с I/O.
+  \item Не блокирует поток на ожидание.
+\end{itemize}
+\textbf{Недостатки:}
+\begin{itemize}
+  \item Сложность отладки и сопровождения.
+  \item Неочевидное управление потоками и ошибками.
+\end{itemize}
+
+\item Как асинхронность реализована в Java? \\
+\begin{itemize}
+  \item \texttt{Future}, \texttt{CompletableFuture}, \texttt{ExecutorService}.
+  \item В Spring — аннотация \texttt{@Async} и \texttt{TaskExecutor}.
+\end{itemize}
+\end{itemize}
+
+\subsection{Что такое Circuit Breaker}
+Circuit Breaker (предохранитель, «автомат защиты») — это шаблон отказоустойчивости, который используется для предотвращения каскадных сбоев в распределённых системах.
+\begin{itemize}
+\item Как Circuit Breaker предотвращает каскадные сбои? \\
+Если внешняя система постоянно возвращает ошибки, Circuit Breaker временно "разрывает" соединение и не посылает новые запросы, давая системе восстановиться.
+
+\item Какие есть реализации? \\
+\texttt{Resilience4j}, \texttt{Hystrix (устарел)}.
+
+\item Как настроить Circuit Breaker в Spring? \\
+С использованием Spring Boot + Resilience4j:
+\begin{lstlisting}[style=javastyle]
+@CircuitBreaker(name = "myService", fallbackMethod = "fallback")
+public String callExternal() {
+  return restTemplate.getForObject(...);
+}
+\end{lstlisting}
+\end{itemize}
+
+\subsection{Что такое Rate Limiter и зачем он нужен}
+
+\begin{itemize}
+\item Rate Limiter ограничивает количество запросов к ресурсу за определённое время. Помогает:
+\begin{itemize}
+  \item Защититься от перегрузки.
+  \item Гарантировать честный доступ к ресурсам.
+\end{itemize}
+
+\item Где применяется Rate Limiter? \\
+И на клиенте, и на сервере:
+\begin{itemize}
+  \item \textbf{Клиент:} чтобы не перегружать внешний API.
+  \item \textbf{Сервер:} чтобы защититься от DDoS или чрезмерной активности.
+\end{itemize}
+\end{itemize}
+
+\subsection{Гарантии доставки сообщений}
+
+\begin{itemize}
+\item \textbf{At most once} — сообщение может не дойти, но не повторится. Быстро, но ненадёжно.
+\item \textbf{At least once} — сообщение точно дойдёт, но может повторяться. Нужна идемпотентность.
+\item \textbf{Exactly once} — сообщение дойдёт ровно один раз. Самая сложная гарантия.
+
+\item Применение:
+\begin{itemize}
+  \item \textbf{At most once} — UDP, метрики, телеметрия.
+  \item \textbf{At least once} — Kafka по умолчанию.
+  \item \textbf{Exactly once} — денежные переводы, бухгалтерия.
+\end{itemize}
+\end{itemize}
+
+\subsection{Идемпотентные операции}
+Идемпотентные операции — это такие операции, результат которых не меняется при повторном выполнении с теми же входными данными.
+\begin{itemize}
+\item Примеры:
+\begin{itemize}
+  \item \textbf{Идемпотентные:} \texttt{GET /user/1}, \texttt{DELETE /user/1}, \texttt{PUT /user/1}.
+  \item \textbf{Неидемпотентные:} \texttt{POST /user} (создание каждый раз нового).
+\end{itemize}
+
+\item Как помогает достичь \texttt{exactly once}? \\
+Если операция идемпотентна, то её повторное выполнение не изменяет состояние — это позволяет безопасно обрабатывать повторные доставки в системах с гарантией \texttt{at least once}.
+\end{itemize}
+\subsection{Что такое Kafka}
+Apache Kafka — это распределённая платформа потоковой передачи сообщений (streaming platform), предназначенная для передачи, хранения и обработки больших объёмов данных в реальном времени.
+\begin{itemize}
+\item Как Kafka обеспечивает обмен сообщениями? \\
+Kafka — это распределённая очередь сообщений. Producer пишет в топики (topics), каждый из которых делится на партиции. Consumer читает данные из партиций.
+
+\item Как Kafka гарантирует доставку сообщений? \\
+Через:
+\begin{itemize}
+  \item Репликацию партиций между брокерами.
+  \item Настройку \texttt{acks} у producer.
+  \item Управление смещениями (offset) у consumer.
+\end{itemize}
+\end{itemize}
+
+\subsection{Как работает consumer group в Kafka}
+
+\begin{itemize}
+\item Что происходит, если количество потребителей не совпадает с количеством партиций? \\
+\begin{itemize}
+  \item \textbf{Партиций больше:} некоторые потребители читают несколько партиций.
+  \item \textbf{Потребителей больше:} лишние потребители простаивают.
+\end{itemize}
+
+\item Почему два consumer из одной группы не могут читать одну партицию? \\
+Каждая партиция может быть назначена только одному consumer в группе для обеспечения порядка чтения.
+\end{itemize}
+
+\subsection{Что такое commit offset в Kafka}
+В Apache Kafka offset — это уникальный идентификатор позиции сообщения в партиции. \\
+А commit offset — это процесс сохранения текущей позиции, до которой consumer успешно обработал сообщения.
+\begin{itemize}
+\item Как работает \texttt{auto-commit} и какие у него могут быть проблемы? \\
+\texttt{auto-commit=true} по умолчанию — offset фиксируется автоматически. Может привести к потере данных при сбое между commit и обработкой.
+
+\item Почему Kafka не удаляет сообщения после commit? \\
+Kafka хранит сообщения по времени (retention) или размеру, а не по offset. Это позволяет нескольким группам читать одни и те же сообщения независимо.
+\end{itemize}
+
+\subsection{Настройки \texttt{acks} у producer и гарантии доставки}
+
+\begin{itemize}
+\item Чем отличается \texttt{acks=0}, \texttt{acks=1}, \texttt{acks=all}?
+\begin{itemize}
+  \item \texttt{acks=0} — не ждёт подтверждений, возможна потеря.
+  \item \texttt{acks=1} — ждёт от лидера, возможна потеря при сбое до репликации.
+  \item \texttt{acks=all} — ждёт подтверждения от всех in-sync реплик.
+\end{itemize}
+
+\item Как параметр \texttt{min.insync.replicas} связан с надёжностью? \\
+Устанавливает минимальное число реплик, которые должны подтвердить запись при \texttt{acks=all}. Если их меньше — запись будет отклонена.
+\end{itemize}
+
+\subsection{Отказоустойчивость и масштабируемость Kafka}
+
+\begin{itemize}
+\item Как работает репликация партиций? \\
+Каждая партиция имеет лидера и несколько реплик. Только лидер обрабатывает запись/чтение, остальные — резервные копии.
+
+\item Что такое \texttt{retention policy} и как она влияет на хранение? \\
+Kafka хранит сообщения независимо от чтения. Политика retention:
+\begin{itemize}
+  \item \texttt{retention.ms} — по времени.
+  \item \texttt{retention.bytes} — по размеру.
+\end{itemize}
+Позволяет настраивать долговременное хранение или очистку сообщений.
+\end{itemize}
+\subsection{Что такое loose coupling в контексте асинхронного взаимодействия}
+В контексте асинхронного взаимодействия loose coupling (слабая связность) означает, что компоненты системы (например, микросервисы) взаимодействуют друг с другом без жёсткой зависимости. Они не знают напрямую друг о друге, а обмениваются сообщениями через посредника — брокера сообщений (например, Kafka, RabbitMQ).
+
+\begin{itemize}
+\item Как брокеры сообщений помогают уменьшить связанность между сервисами? \\
+Брокеры выступают посредниками: сервисы не знают напрямую друг о друге, а обмениваются сообщениями через брокер. Это снижает жёсткую связанность.
+
+\item Пример жесткой и слабой связанности в коде: \\
+\textbf{Жесткая связанность:}
+\begin{lstlisting}[style=javastyle]
+OrderService orderService = new OrderService();
+orderService.createOrder();
+PaymentService paymentService = new PaymentService();
+paymentService.processPayment();
+\end{lstlisting}
+Прямые вызовы — высокая связанность.
+
+\textbf{Слабая связанность через брокер:}
+\begin{lstlisting}[style=javastyle]
+messageBroker.publish("order.created", orderData);
+messageBroker.subscribe("order.created", event -> processPayment(event));
+\end{lstlisting}
+Сервисы взаимодействуют через сообщения.
+\end{itemize}
+
+\subsection{Проблемы консистентности при работе с несколькими источниками данных}
+
+\begin{itemize}
+\item Пример кода, где сообщение в Kafka отправляется до/после коммита транзакции и риски:
+\begin{lstlisting}[style=javastyle]
+producer.send(kafkaMessage);
+dbTransaction.commit();
+
+dbTransaction.commit();
+producer.send(kafkaMessage);
+\end{lstlisting}
+
+\item Почему нельзя гарантировать строгую консистентность без дополнительных механизмов? \\
+Разные системы управляют транзакциями независимо. Без координации возможны рассинхронизации.
+\end{itemize}
+
+\subsection{Как работает двухфазный коммит (2PC)}
+
+\begin{itemize}
+\item Гарантии доставки: \texttt{at least once}, но не \texttt{exactly once} \\
+2PC гарантирует согласованность двух и более систем, но может приводить к повторной отправке сообщений.
+
+\item Преимущества и недостатки: \\
+\begin{itemize}
+  \item + Гарантирует согласованность.
+  \item - Высокая задержка и блокировка ресурсов.
+  \item - Сложность реализации и возможные дедлоки.
+\end{itemize}
+\end{itemize}
+
+\subsection{Как работает Transactional Outbox}
+
+\begin{itemize}
+\item Гарантии доставки: обычно \texttt{at least once} \\
+Сообщения сохраняются в отдельной таблице в той же транзакции, что и изменения данных, а потом асинхронно отправляются.
+
+\item Преимущества и недостатки: \\
+\begin{itemize}
+  \item + Избегает проблем 2PC.
+  \item + Высокая отказоустойчивость.
+  \item - Возможны дубликаты, требующие идемпотентной обработки.
+\end{itemize}
+\end{itemize}
+
+\subsection{Что такое JSON, преимущества и недостатки}
+
+\begin{itemize}
+\item Почему JSON популярен в REST API? \\
+Простота, человекочитаемость, поддержка в большинстве языков, гибкая структура.
+
+\item Проблемы при работе с типами данных: \\
+Например, \texttt{long} может быть больше, чем максимальное значение \texttt{integer} в JavaScript, что ведёт к потере точности.
+\end{itemize}
+
+\subsection{Что такое Protocol Buffers и как они работают}
+
+\begin{itemize}
+\item Как определяется схема данных в \texttt{.proto}-файле? \\
+Через описание сообщений, полей с типами и номерами:
+\begin{lstlisting}[style=javastyle]
+message Person {
+  int32 id = 1;
+  string name = 2;
+  repeated string emails = 3;
+}
+\end{lstlisting}
+
+\item Какие типы полей поддерживаются? \\
+\texttt{optional}, \texttt{required} (в старых версиях), \texttt{repeated}, \texttt{map}.
+\end{itemize}
+
+\subsection{Что такое Avro и как он работает}
+
+\begin{itemize}
+\item Как Avro использует схемы? \\
+Схема JSON описывает структуру данных, используется при записи и чтении для валидации и сериализации.
+
+\item Разница между схемой для записи и чтения: \\
+Позволяет эволюцию схемы, например, добавлять новые поля (чтение старой записи новой схемой).
+\end{itemize}
+
+\subsection{Что такое прямая и обратная совместимость схем}
+
+\begin{itemize}
+\item Примеры нарушений обратной совместимости: \\
+Удаление поля, изменение типа поля.
+
+\item Как Protocol Buffers и Avro помогают поддерживать совместимость? \\
+Используют номера полей и правила изменения схем, чтобы новые версии могли читать старые данные и наоборот.
+\end{itemize}
+
+\subsection{Как обеспечить совместимость при добавлении новых полей в JSON-схему}
+
+\begin{itemize}
+\item Аннотации Jackson, которые помогают: \\
+\texttt{@JsonIgnoreProperties(ignoreUnknown = true)} — игнорирует неизвестные поля. \\
+\texttt{@JsonProperty} — управляет сериализацией и десериализацией.
+
+\item Почему важно помечать новые поля как \texttt{optional} в бинарных форматах? \\
+Чтобы старые клиенты могли работать с новыми сообщениями без ошибок.
+\end{itemize}
+
+\end{document}
+
